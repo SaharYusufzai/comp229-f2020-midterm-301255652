@@ -84,7 +84,12 @@ router.get("/delete", async (req, res, next) => {
    *****************/
   const { _id } = await Faculties.findOne()
   const response = await Faculties.deleteOne({ _id })
-  res.send(response)
+  if (response) {
+    res.redirect('/faculties')
+  } else {
+
+    res.redirect('/error')
+  }
 
 
 });
