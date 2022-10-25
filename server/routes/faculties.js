@@ -28,6 +28,19 @@ router.get("/add", (req, res, next) => {
     title: "Add Faculty",
   })
 });
+
+
+// POST process the faculty  Details page and create a new faculty  - CREATE
+router.post("/add", async (req, res, next) => {
+  /*****************
+    * ADD CODE HERE *
+    *****************/
+  const data = new Faculties(req.body);
+  await data.save()
+  res.redirect('/faculties')
+});
+
+// GET the faculty  Details page in order to edit an existing faculty
 router.get("/edit", (req, res, next) => {
   // find all faculties in the faculties collection
   faculty.find((err, faculties) => {
@@ -42,36 +55,38 @@ router.get("/edit", (req, res, next) => {
   });
 });
 
-// POST process the faculty  Details page and create a new faculty  - CREATE
-router.post("/add", async (req, res, next) => {
-  /*****************
-    * ADD CODE HERE *
-    *****************/
-  const data = new Faculties(req.body);
-  await data.save()
-  res.redirect('/faculties')
-});
 
-// GET the faculty  Details page in order to edit an existing faculty
-router.post("/edit/:id", (req, res, next) => {
+//POST edit an existing faculty
+router.post("/edit/:id", async (req, res, next) => {
   /*****************
    * ADD CODE HERE *
    *****************/
-  res.send(req.body)
+  const { id } = req.params;
+  const response = await Faculties.updateOne({ _id: id }, req.body)
+  if (response) {
+
+    res.redirect('/faculties')
+  } else {
+    res.redirect('/error')
+
+  }
+
+
 });
 
-// POST - process the information passed from the details form and update the document
-router.post("/:id", (req, res, next) => {
-  /*****************
-   * ADD CODE HERE *
-   *****************/
-});
+
+
 
 // GET - process the delete
-router.get("/delete", (req, res, next) => {
+router.get("/delete", async (req, res, next) => {
   /*****************
    * ADD CODE HERE *
    *****************/
+  const { _id } = await Faculties.findOne()
+  const response = await Faculties.deleteOne({ _id })
+  res.send(response)
+
+
 });
 
 module.exports = router;
